@@ -3,22 +3,20 @@
 ## By: Adam D. Cornett
 
 ## Overview
-AWS Controllers for Kubernetes, ACK for short, is an open source project that project that enables a user to define 
-and use AWS resources directly form Kubernetes and OpenShift. Each AWS service, say S# for example has it's own Operator (controller manager),
-that allows a user to define, create, update, delete an S3 bucket as an example. This is very powerful tool to be able to manage AWS resources, directly
-from an OpenShift cluster, via an Operator, thus reducing time/effort to create AWS resources. 
+AWS Controllers for Kubernetes ("ACK") is an open source project that project that enables a user to define 
+and use AWS resources directly from Kubernetes and OpenShift. Each AWS service, say S3 for example has it's own Operator (controller manager),
+that allows a user to define, create, update, delete an S3 bucket. This is very powerful tool to be able to manage AWS resources, directly
+from an OpenShift cluster, reducing time/effort to create AWS resources. 
 
 Most of the articles/blogs about ACK use a single AWS account (IAM) for their examples, but ACK was designed 
-and built with Multi-tenancy (multiple AWS account), support built in. In most IT departments and Enterprise organizations each department, or team
-has its own budget to keep track of, and untimely its own AWS account it manage (bill) their resources to. That will be the focus of this article, 
-so setup the ACK S3 Operator with multiple AWS accounts. One account for the controller to run under, and one account to create Buckets against, and the
-'Marketing' department will get billed for. With that said, if you haven't already done so, I encourage you to check out some of the other articles about 
+and built with Multi-tenancy (multiple AWS account) support built in. In most IT departments and Enterprise organizations, each department or team
+has its own budget to keep track of, and ultimately its own AWS account where its resources are billed. In this article, we will configure the the ACK S3 Operator with multiple AWS accounts in an example multi-tenant scenario. One account for the controller to run under, and one account to create Buckets against, and the
+'Marketing' department will get billed. With that said, if you haven't already done so, I encourage you to check out some of the other articles about 
 ACK listed below.
 
 
 ## Links to Other ACK Specific Articles
-There have already been a few articles written about ACK, if you have yet to read any, or want to learn more about ACK within the OpenShift ecosystem,
-recommend reading the follow articles.
+There have already been a few articles written about ACK. If you want to learn more about ACK within the OpenShift ecosystem, recommend reading the follow articles.
 
 - [Attention Developers: You can now easily integrate AWS services with your applications on OpenShift](https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift): High level overview of the project.
 - [How to use Operators with AWS Controllers for Kubernetes](https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift): Pre-install steps for S3 Operator.
@@ -27,7 +25,7 @@ recommend reading the follow articles.
 ## Pre-reqs
 1. An OpenShift Cluster with Cluster Admin Access.
 2. Two AWS Accounts.
-   1. Two unique IAM ID's.
+   1. Two unique IAM IDs.
       1. One for the controller to run under.
       2. One account that will be billed for the buckets created.
 3. AWS CLI (`$ aws`) installed.
@@ -45,7 +43,7 @@ aws --profile 111111111111 iam create-user \
     --user-name ack-s3-service-controller \ 
     | tee created-user.json
 
-# response
+# response, which is written to the file "create-user.json"
 {
     "User": {
         "Path": "/",
@@ -65,7 +63,7 @@ aws --profile 111111111111 iam create-access-key \
     --user-name ack-s3-service-controller \
     | tee access-key.json
 
-# response
+# response, which is written to the file "access-key.json"
 
 {
     "AccessKey": {
@@ -116,7 +114,7 @@ aws --profile 111111111111 iam attach-user-policy \
 --user-name ack-s3-service-controller \
 --policy-arn "arn:aws:iam::111111111111:policy/ack-can-assume"
 
-#no output from this command lets manually validate
+#no output from this command, lets manually validate
 aws --profile 111111111111 iam list-attached-user-policies \
     --user-name ack-s3-service-controller
 
@@ -244,7 +242,7 @@ oc create configmap \
 ### Step 4: Configure the controllers credentials
 These are the credentials that we created earlier in account `111111111111`.
 
-Create a `config.txt` (NAMESPACE is left black so the controller will watch all namespaces):
+Create a `config.txt` (NAMESPACE is intentionally blank so the controller will watch all namespaces):
 ```bash
 cat <<EOF >>config.txt
 ACK_ENABLE_DEVELOPMENT_LOGGING=true
@@ -281,7 +279,7 @@ oc create secret generic \
 ```
 
 ## **Note**
-f you change the name of either the ConfigMap or the Secret from the values given above, i.e. ack-$SERVICE-user-config and ack-$SERVICE-user-secrets, 
+If you change the name of either the ConfigMap or the Secret from the values given above, i.e. ack-$SERVICE-user-config and ack-$SERVICE-user-secrets, 
 then installations from OperatorHub will not function properly. The Deployment for the controller is preconfigured for these key values.
 
 ## Install the Operator via OperatorHub
