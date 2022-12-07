@@ -3,35 +3,24 @@
 ## By: Adam D. Cornett
 
 ## Overview
-AWS Controllers for Kubernetes ("ACK") is an open source project that project that enables a user to define 
-and use AWS resources directly from Kubernetes and OpenShift. Each AWS service, say S3 for example has it's own Operator 
-(controller manager), that allows a user to define, create, update, delete an S3 bucket. This is very powerful tool to be 
-able to manage AWS resources, directly from an OpenShift cluster, reducing time/effort to create AWS resources. 
+AWS Controllers for Kubernetes ("ACK") is an open source project that enables a user to define 
+and use AWS resources directly from Kubernetes and OpenShift. Each supported AWS service has a controller that allows a 
+user to manage the technology relevant to that service. For example, the S3 controller manages `Buckets`. This is very 
+powerful tool to be able to manage AWS resources, directly from an OpenShift cluster, reducing time/effort to create AWS 
+resources. 
 
-Most of the articles/blogs about ACK use a single AWS account (IAM) for their examples, but ACK was designed 
-and built with Multi-tenancy (multiple AWS account) support built in. In most IT departments and Enterprise organizations, 
-each department or team has its own budget to keep track of, and ultimately its own AWS account where its resources are 
-billed. In this article, we will configure the the ACK S3 Operator with multiple AWS accounts in an example multi-tenant 
-scenario. One account for the controller to run under, and one account to create Buckets against, which the 'Marketing' 
-department will get billed. With that said, if you haven't already done so, I encourage you to check out some of the 
-other articles about ACK listed below.
+ACK controllers are built with the flexibility to configure the controller to fit many IAM configurations. 
+The controllers support Single-tenancy (one AWS account), Multi-tenancy (multiple AWS accounts), and even 
+IAM roles for service accounts ([IRSA](https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html)) 
+configuration out of the box. The most straightforward configuration is a Single-tenancy configuration, this would mean 
+that any ACK resource created, an S3 bucket for example, would all be billed under the same AWS account, no matter the 
+namespace that said bucket was created in. However, this configuration lacks the flexibility that is needed in most IT 
+departments and organizations. In most IT departments and Enterprise organizations, each department or team has its own 
+budget to keep track of, and ultimately its own AWS account where its resources are billed. In this article, we will configure
+the ACK S3 Operator with multiple AWS accounts in an example Multi-tenant scenario. One account for the controller to run under,
+and one account to create Buckets against, which the 'Marketing' department will get billed.
 
-
-## Links to Other ACK Specific Articles
-There have already been a few articles written about ACK. If you want to learn more about ACK within the OpenShift 
-ecosystem, recommend reading the follow articles.
-
-- [Attention Developers: You can now easily integrate AWS services with your applications on OpenShift](
-https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
-High level overview of the project.
-- [How to use Operators with AWS Controllers for Kubernetes](
-https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
-Pre-install steps for S3 Operator.
-- [Create AWS resources with Kubernetes and Operators](
-https://developers.redhat.com/articles/2022/05/24/create-aws-resources-kubernetes-and-operators): 
-Installing S3 Operator and creating a Bucket.
-
-## Pre-reqs
+## Prerequisite
 1. An OpenShift Cluster with Cluster Admin Access.
 2. Two AWS Accounts.
    1. Two unique IAM IDs.
@@ -86,7 +75,6 @@ aws --profile 111111111111 iam create-access-key \
 ```
 
 ### Step 2: Create an 'assume role policy document' and create a role using this policy document.
-##todo-adam the below should be cleaned up to use AWS language
 This “assume role policy document” contains instructions as to what AWS principles can “assume” this role. 
 To “assume” a role in AWS terms effectively means to have privileges enabled by that role.
 
@@ -344,3 +332,18 @@ aws --profile 222222222222 --region us-west-1 s3 ls | grep marketing
 If we followed all the instructions in this example, we have a controller running under one AWS IAM account, and then we 
 were able to create a `Bucket` under another AWS IAM account. This simple example can be expanded to any number of 
 namespaces, to accommodate any number of AWS IAM accounts that might exist in a real world IT organization.
+
+
+## Further Reading
+There have already been a few articles written about ACK. If you want to learn more about ACK within the OpenShift
+ecosystem, recommend reading the follow articles.
+
+- [Attention Developers: You can now easily integrate AWS services with your applications on OpenShift](
+  https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
+  High level overview of the project.
+- [How to use Operators with AWS Controllers for Kubernetes](
+  https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
+  Pre-install steps for S3 Operator.
+- [Create AWS resources with Kubernetes and Operators](
+  https://developers.redhat.com/articles/2022/05/24/create-aws-resources-kubernetes-and-operators):
+  Installing S3 Operator and creating a Bucket.
