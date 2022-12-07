@@ -4,23 +4,32 @@
 
 ## Overview
 AWS Controllers for Kubernetes ("ACK") is an open source project that project that enables a user to define 
-and use AWS resources directly from Kubernetes and OpenShift. Each AWS service, say S3 for example has it's own Operator (controller manager),
-that allows a user to define, create, update, delete an S3 bucket. This is very powerful tool to be able to manage AWS resources, directly
-from an OpenShift cluster, reducing time/effort to create AWS resources. 
+and use AWS resources directly from Kubernetes and OpenShift. Each AWS service, say S3 for example has it's own Operator 
+(controller manager), that allows a user to define, create, update, delete an S3 bucket. This is very powerful tool to be 
+able to manage AWS resources, directly from an OpenShift cluster, reducing time/effort to create AWS resources. 
 
 Most of the articles/blogs about ACK use a single AWS account (IAM) for their examples, but ACK was designed 
-and built with Multi-tenancy (multiple AWS account) support built in. In most IT departments and Enterprise organizations, each department or team
-has its own budget to keep track of, and ultimately its own AWS account where its resources are billed. In this article, we will configure the the ACK S3 Operator with multiple AWS accounts in an example multi-tenant scenario. One account for the controller to run under, and one account to create Buckets against, and the
-'Marketing' department will get billed. With that said, if you haven't already done so, I encourage you to check out some of the other articles about 
-ACK listed below.
+and built with Multi-tenancy (multiple AWS account) support built in. In most IT departments and Enterprise organizations, 
+each department or team has its own budget to keep track of, and ultimately its own AWS account where its resources are 
+billed. In this article, we will configure the the ACK S3 Operator with multiple AWS accounts in an example multi-tenant 
+scenario. One account for the controller to run under, and one account to create Buckets against, which the 'Marketing' 
+department will get billed. With that said, if you haven't already done so, I encourage you to check out some of the 
+other articles about ACK listed below.
 
 
 ## Links to Other ACK Specific Articles
-There have already been a few articles written about ACK. If you want to learn more about ACK within the OpenShift ecosystem, recommend reading the follow articles.
+There have already been a few articles written about ACK. If you want to learn more about ACK within the OpenShift 
+ecosystem, recommend reading the follow articles.
 
-- [Attention Developers: You can now easily integrate AWS services with your applications on OpenShift](https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift): High level overview of the project.
-- [How to use Operators with AWS Controllers for Kubernetes](https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift): Pre-install steps for S3 Operator.
-- [Create AWS resources with Kubernetes and Operators](https://developers.redhat.com/articles/2022/05/24/create-aws-resources-kubernetes-and-operators): Installing S3 Operator and creating a Bucket.
+- [Attention Developers: You can now easily integrate AWS services with your applications on OpenShift](
+https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
+High level overview of the project.
+- [How to use Operators with AWS Controllers for Kubernetes](
+https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
+Pre-install steps for S3 Operator.
+- [Create AWS resources with Kubernetes and Operators](
+https://developers.redhat.com/articles/2022/05/24/create-aws-resources-kubernetes-and-operators): 
+Installing S3 Operator and creating a Bucket.
 
 ## Pre-reqs
 1. An OpenShift Cluster with Cluster Admin Access.
@@ -197,8 +206,9 @@ aws --profile 222222222222 iam list-attached-role-policies \
 (END) 
 ```
 
-At this point we have configured a user `ack-s3-service-controller` in account `111111111111` that will be provided to the controller so that it can 
-properly startup. This user has also been granted `AssumeRole` privileges for role `ack-marketing-s3` in account `222222222222`. We can now beging setting up the controller in the cluster.
+At this point we have configured a user `ack-s3-service-controller` in account `111111111111` that will be provided to the 
+controller so that it can properly startup. This user has also been granted `AssumeRole` privileges for role 
+`ack-marketing-s3` in account `222222222222`. We can now beging setting up the controller in the cluster.
 
 ## Configure the AWS S3 Controller so that it changes accounts based on namespaces
 
@@ -279,8 +289,9 @@ oc create secret generic \
 ```
 
 ## **Note**
-If you change the name of either the ConfigMap or the Secret from the values given above, i.e. ack-$SERVICE-user-config and ack-$SERVICE-user-secrets, 
-then installations from OperatorHub will not function properly. The Deployment for the controller is preconfigured for these key values.
+If you change the name of either the ConfigMap or the Secret from the values given above, i.e. ack-$SERVICE-user-config 
+and ack-$SERVICE-user-secrets, then installations from OperatorHub will not function properly. The Deployment for the 
+controller is preconfigured for these key values.
 
 ## Install the Operator via OperatorHub
 
@@ -330,5 +341,6 @@ aws --profile 222222222222 --region us-west-1 s3 ls | grep marketing
 ```
 
 ## Conclusion
-If we followed all the instructions in this example, we have a controller running under one AWS IAM account, and then we were able to create
-a `Bucket` under another AWS IAM account.
+If we followed all the instructions in this example, we have a controller running under one AWS IAM account, and then we 
+were able to create a `Bucket` under another AWS IAM account. This simple example can be expanded to any number of 
+namespaces, to accommodate any number of AWS IAM accounts that might exist in a real world IT organization.
