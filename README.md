@@ -196,7 +196,7 @@ aws --profile 222222222222 iam list-attached-role-policies \
 
 At this point we have configured a user `ack-s3-service-controller` in account `111111111111` that will be provided to the 
 controller so that it can properly startup. This user has also been granted `AssumeRole` privileges for role 
-`ack-marketing-s3` in account `222222222222`. We can now beging setting up the controller in the cluster.
+`ack-marketing-s3` in account `222222222222`. We can now begin setting up the controller in the cluster.
 
 ## Configure the AWS S3 Controller so that it changes accounts based on namespaces
 
@@ -299,7 +299,7 @@ Wait for the operator to install:
 
 ![img_3.png](img/img_3.png)
 
-If all the previous steps were completed successful, the `View Operator` icon will appear:
+If all the previous steps were completed successfully, the `View Operator` icon will appear:
 
 ![img_4.png](img/img_4.png)
 
