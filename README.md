@@ -342,7 +342,7 @@ ecosystem, recommend reading the follow articles.
   https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
   High level overview of the project.
 - [How to use Operators with AWS Controllers for Kubernetes](
-  https://cloud.redhat.com/blog/attention-developers-you-can-now-easily-integrate-aws-services-with-your-applications-on-openshift):
+  https://developers.redhat.com/articles/2022/05/16/how-use-operators-aws-controllers-kubernetes):
   Pre-install steps for S3 Operator.
 - [Create AWS resources with Kubernetes and Operators](
   https://developers.redhat.com/articles/2022/05/24/create-aws-resources-kubernetes-and-operators):
